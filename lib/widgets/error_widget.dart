@@ -16,25 +16,27 @@ class WeatherErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
+        color: colors.surface.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(color: colors.outline.withValues(alpha: 0.72)),
       ),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.cloud_off_rounded,
             size: 72,
-            color: Colors.white,
+            color: colors.onSurface,
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Unable to Load Weather',
             style: TextStyle(
-              color: Colors.white,
+              color: colors.onSurface,
               fontSize: 22,
               fontWeight: FontWeight.w700,
             ),
@@ -44,7 +46,9 @@ class WeatherErrorState extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white70),
+            style: TextStyle(
+              color: colors.onSurface.withValues(alpha: 0.76),
+            ),
           ),
           const SizedBox(height: 20),
           FilledButton.icon(
@@ -57,8 +61,8 @@ class WeatherErrorState extends StatelessWidget {
             OutlinedButton(
               onPressed: onSecondaryAction,
               style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white54),
+                foregroundColor: colors.onSurface,
+                side: BorderSide(color: colors.outline.withValues(alpha: 0.84)),
               ),
               child: Text(secondaryActionLabel!),
             ),

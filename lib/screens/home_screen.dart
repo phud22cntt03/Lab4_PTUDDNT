@@ -9,13 +9,14 @@ import 'package:weather_app/screens/search_screen.dart';
 import 'package:weather_app/screens/settings_screen.dart';
 import 'package:weather_app/utils/constants.dart';
 import 'package:weather_app/utils/date_formatter.dart';
-import 'package:weather_app/utils/weather_icons.dart';
+import 'package:weather_app/utils/weather_theme.dart';
 import 'package:weather_app/widgets/current_weather_card.dart';
 import 'package:weather_app/widgets/daily_forecast_card.dart';
 import 'package:weather_app/widgets/error_widget.dart';
 import 'package:weather_app/widgets/hourly_forecast_list.dart';
 import 'package:weather_app/widgets/loading_shimmer.dart';
 import 'package:weather_app/widgets/weather_detail_item.dart';
+import 'package:weather_app/widgets/weather_backdrop.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,24 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Consumer<WeatherProvider>(
       builder: (context, weatherProvider, child) {
         final weather = weatherProvider.currentWeather;
-        final gradient = weather == null
-            ? const LinearGradient(
-                colors: [Color(0xFF1F2937), Color(0xFF0F172A)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : WeatherVisuals.gradientForCondition(
-                weather.mainCondition,
-                isNight: weather.isNightTime,
-              );
+        final palette = WeatherPalette.fromWeather(weather);
 
-        return Container(
-          decoration: BoxDecoration(gradient: gradient),
+        return WeatherBackdrop(
+          palette: palette,
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: SafeArea(
               child: RefreshIndicator(
-                onRefresh: () => context.read<WeatherProvider>().refreshWeather(),
+                onRefresh: () =>
+                    context.read<WeatherProvider>().refreshWeather(),
                 child: _buildBody(context, weatherProvider, weather),
               ),
             ),
@@ -233,6 +226,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weather = context.watch<WeatherProvider>().currentWeather;
+    final colors = Theme.of(context).colorScheme;
 
     return Row(
       children: [
@@ -245,7 +239,6 @@ class _Header extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 4),
@@ -253,7 +246,9 @@ class _Header extends StatelessWidget {
                 weather == null
                     ? 'Real-time updates, search, and offline cache'
                     : 'Updated ${DateFormatter.lastUpdated(context.watch<WeatherProvider>().lastUpdated)}',
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(
+                  color: colors.onSurface.withValues(alpha: 0.76),
+                ),
               ),
             ],
           ),
@@ -285,15 +280,17 @@ class _HeaderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Material(
-      color: Colors.white.withValues(alpha: 0.16),
+      color: colors.surface.withValues(alpha: 0.72),
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: colors.onSurface),
         ),
       ),
     );
@@ -307,21 +304,23 @@ class _StatusBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
+        color: colors.surface.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(color: colors.outline.withValues(alpha: 0.72)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded, color: Colors.white),
+          Icon(Icons.info_outline_rounded, color: colors.onSurface),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: colors.onSurface),
             ),
           ),
         ],
@@ -345,12 +344,14 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.14),
+        color: colors.surface.withValues(alpha: 0.72),
         borderRadius: BorderRadius.circular(AppConstants.cardRadius),
-        border: Border.all(color: Colors.white24),
+        border: Border.all(color: colors.outline.withValues(alpha: 0.72)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,8 +361,8 @@ class _SectionCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colors.onSurface,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),
@@ -372,7 +373,7 @@ class _SectionCard extends StatelessWidget {
                   onPressed: onTrailingTap,
                   child: Text(
                     trailingLabel!,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: colors.onSurface),
                   ),
                 ),
             ],
@@ -435,11 +436,10 @@ class _DetailsGrid extends StatelessWidget {
       children: items
           .map(
             (item) => SizedBox(
-              width:
-                  (MediaQuery.of(context).size.width -
-                          (AppConstants.screenPadding * 2) -
-                          48) /
-                      2,
+              width: (MediaQuery.of(context).size.width -
+                      (AppConstants.screenPadding * 2) -
+                      48) /
+                  2,
               child: item,
             ),
           )

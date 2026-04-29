@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/providers/settings_provider.dart';
+import 'package:weather_app/providers/weather_provider.dart';
+import 'package:weather_app/utils/constants.dart';
+import 'package:weather_app/utils/weather_theme.dart';
+import 'package:weather_app/widgets/weather_backdrop.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -8,64 +12,69 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsProvider>();
+    final weather = context.watch<WeatherProvider?>()?.currentWeather;
+    final palette = WeatherPalette.fromWeather(weather);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          const _SettingsTitle(title: 'Temperature Unit'),
-          _SegmentedSection<TemperatureUnit>(
-            value: settings.temperatureUnit,
-            segments: const [
-              ButtonSegment(
-                value: TemperatureUnit.celsius,
-                label: Text('Celsius (C)'),
-              ),
-              ButtonSegment(
-                value: TemperatureUnit.fahrenheit,
-                label: Text('Fahrenheit (F)'),
-              ),
-            ],
-            onSelectionChanged: settings.setTemperatureUnit,
-          ),
-          const SizedBox(height: 20),
-          const _SettingsTitle(title: 'Wind Speed Unit'),
-          _SegmentedSection<WindSpeedUnit>(
-            value: settings.windSpeedUnit,
-            segments: const [
-              ButtonSegment(
-                value: WindSpeedUnit.ms,
-                label: Text('m/s'),
-              ),
-              ButtonSegment(
-                value: WindSpeedUnit.kmh,
-                label: Text('km/h'),
-              ),
-              ButtonSegment(
-                value: WindSpeedUnit.mph,
-                label: Text('mph'),
-              ),
-            ],
-            onSelectionChanged: settings.setWindSpeedUnit,
-          ),
-          const SizedBox(height: 20),
-          const _SettingsTitle(title: 'Clock Format'),
-          _SegmentedSection<ClockFormat>(
-            value: settings.clockFormat,
-            segments: const [
-              ButtonSegment(
-                value: ClockFormat.h24,
-                label: Text('24-hour'),
-              ),
-              ButtonSegment(
-                value: ClockFormat.h12,
-                label: Text('12-hour'),
-              ),
-            ],
-            onSelectionChanged: settings.setClockFormat,
-          ),
-        ],
+    return WeatherBackdrop(
+      palette: palette,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Settings')),
+        body: ListView(
+          padding: const EdgeInsets.all(AppConstants.screenPadding),
+          children: [
+            const _SettingsTitle(title: 'Temperature Unit'),
+            _SegmentedSection<TemperatureUnit>(
+              value: settings.temperatureUnit,
+              segments: const [
+                ButtonSegment(
+                  value: TemperatureUnit.celsius,
+                  label: Text('Celsius (C)'),
+                ),
+                ButtonSegment(
+                  value: TemperatureUnit.fahrenheit,
+                  label: Text('Fahrenheit (F)'),
+                ),
+              ],
+              onSelectionChanged: settings.setTemperatureUnit,
+            ),
+            const SizedBox(height: 20),
+            const _SettingsTitle(title: 'Wind Speed Unit'),
+            _SegmentedSection<WindSpeedUnit>(
+              value: settings.windSpeedUnit,
+              segments: const [
+                ButtonSegment(
+                  value: WindSpeedUnit.ms,
+                  label: Text('m/s'),
+                ),
+                ButtonSegment(
+                  value: WindSpeedUnit.kmh,
+                  label: Text('km/h'),
+                ),
+                ButtonSegment(
+                  value: WindSpeedUnit.mph,
+                  label: Text('mph'),
+                ),
+              ],
+              onSelectionChanged: settings.setWindSpeedUnit,
+            ),
+            const SizedBox(height: 20),
+            const _SettingsTitle(title: 'Clock Format'),
+            _SegmentedSection<ClockFormat>(
+              value: settings.clockFormat,
+              segments: const [
+                ButtonSegment(
+                  value: ClockFormat.h24,
+                  label: Text('24-hour'),
+                ),
+                ButtonSegment(
+                  value: ClockFormat.h12,
+                  label: Text('12-hour'),
+                ),
+              ],
+              onSelectionChanged: settings.setClockFormat,
+            ),
+          ],
+        ),
       ),
     );
   }

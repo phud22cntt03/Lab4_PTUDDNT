@@ -10,6 +10,7 @@ import 'package:weather_app/services/connectivity_service.dart';
 import 'package:weather_app/services/location_service.dart';
 import 'package:weather_app/services/storage_service.dart';
 import 'package:weather_app/services/weather_service.dart';
+import 'package:weather_app/utils/weather_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,22 +59,16 @@ class WeatherApp extends StatelessWidget {
           ),
         ),
       ],
-      child: Consumer<SettingsProvider>(
-        builder: (context, settings, child) {
+      child: Consumer2<SettingsProvider, WeatherProvider>(
+        builder: (context, settings, weatherProvider, child) {
+          final palette = WeatherPalette.fromWeather(
+            weatherProvider.currentWeather,
+          );
+
           return MaterialApp(
             title: 'Weather App',
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorSchemeSeed: Colors.orange,
-              useMaterial3: true,
-              scaffoldBackgroundColor: Colors.transparent,
-              cardTheme: CardThemeData(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
+            theme: palette.toThemeData(),
             home: const HomeScreen(),
           );
         },

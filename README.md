@@ -101,3 +101,7 @@ Place required screenshots in the `screenshots/` folder before submission.
 - Add multi-language support
 - Add animated weather backgrounds
 - Add widget support for Android and iOS
+
+# Testing 
+![alt text](image.png)
+

@@ -14,15 +14,18 @@ class WeatherDetailItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
+        color: colors.surface.withValues(alpha: 0.68),
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colors.outline.withValues(alpha: 0.56)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.white),
+          Icon(icon, color: colors.onSurface),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -30,13 +33,16 @@ class WeatherDetailItem extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(
+                    color: colors.onSurface.withValues(alpha: 0.72),
+                    fontSize: 12,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colors.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
